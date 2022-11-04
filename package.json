@@ -1,0 +1,23 @@
+{
+  "name": "api_auth_express",
+  "version": "1.0.0",
+  "description": "Auth en nodejs, express y sequelize",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zlinker89/api_auth_express.git"
+  },
+  "author": "franklin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zlinker89/api_auth_express/issues"
+  },
+  "homepage": "https://github.com/zlinker89/api_auth_express#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2"
+  }
+}
