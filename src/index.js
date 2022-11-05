@@ -1,22 +1,29 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-
+const cors = require('cors');
 const app = express();
 
 require('dotenv').config();
-
-require('./configuration/db')
-
-
 // middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors()); // permite que otras apps accedan a mi API
+
+// Set database and models
+const db = require('./configuration/db')
+const UserRouter = require('./routes/users');
+
+(async () => {
+    try {
+        await db.authenticate();
+        await db.sync({ force: false })
+        console.log("Database connected");
+    } catch (error) {
+        throw new Error(error);
+    }
+})()
+
 
 // routes
-app.get('/', (req, res) => {
-    res.send('Hola Mundo');
-});
-
+app.use(UserRouter);
 
 // listen
 app.listen(3000, () => {

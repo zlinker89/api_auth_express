@@ -1,0 +1,18 @@
+GET http://localhost:3000/users
+
+###
+
+// get one resource
+GET http://localhost:3000/users/9bef7fa2-b105-4197-89a8-731dd25878da
+
+
+###
+
+// get one resource
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "dayana@hotmail.com",
+    "password": "1234"
+}
