@@ -1,4 +1,4 @@
-const { DataTypes, Error } = require('sequelize');
+const { DataTypes, Error, Op } = require('sequelize');
 const db = require('../configuration/db');
 
 const User = db.define('users', {
@@ -25,6 +25,33 @@ const User = db.define('users', {
 },
     { timestamps: true }
 );
+
+User.getPaginated = async function (page, size, filter = null) {
+    let users = [];
+    try {
+        if (!filter) {
+            users = await User.findAndCountAll({
+                offset: db.literal(page * size),
+                limit: db.literal(size),
+                order: [db.literal('name')]
+            });
+        } else {
+            users = await User.findAndCountAll({
+                offset: db.literal(page * size),
+                limit: db.literal(size),
+                where: { name: { [Op.like] : `%${filter.toLowerCase()}%` }  },
+                order: [db.literal('name')]
+            });
+        }
+    } catch (error) {
+        throw new Error(error);
+    }
+    // config pagination
+    const { count, rows } = users;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil(count / size);
+    return { totalItems: count, rows, totalPages, currentPage };
+}
 
 User.searchUser = async function (predicate) {
     try {

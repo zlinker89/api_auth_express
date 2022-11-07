@@ -1,4 +1,11 @@
-GET http://localhost:3000/users
+// get users paginated
+GET http://localhost:3000/users?size=25&page=0
+
+###
+
+// get users paginated
+GET http://localhost:3000/users?size=25&page=0&filter=frank
+
 
 ###
 
@@ -13,6 +20,6 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "dayana@hotmail.com",
+    "name": "dayana89@hotmail.com",
     "password": "1234"
 }

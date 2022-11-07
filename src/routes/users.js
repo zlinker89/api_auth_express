@@ -5,16 +5,27 @@ const { v4: uuidv4 } = require('uuid');
 const { make } = require('../helpers/passwordHelper');
 
 router.get('/users', async (req, res) => {
-    const users = await User.findAll();
-    const usersMap = users.map(user => {
-        return Object.assign(
-            {},
-            ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
-                [key]: user[key]
-            }))
-        );
-    });
-    res.json(usersMap);
+    const size = Number(req.query.size);
+    const page = Number(req.query.page);
+    const filter = req.query.filter;
+    try {
+        const data = await User.getPaginated(page, size, filter);
+        data.rows = data.rows.map(user => {
+            return Object.assign(
+                {},
+                ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
+                    [key]: user[key]
+                }))
+            );
+        });
+        res.json(data);
+    } catch (error) {
+        return res.status(422).json({
+            errors: {
+                msg: error.message
+            }
+        })
+    }
 });
 
 router.get('/users/:hashId', async (req, res) => {
@@ -68,7 +79,7 @@ router.post('/users',
                     [key]: user[key]
                 }))
             );
-            res.json(userToShow);
+            res.status(201).json(userToShow);
         } catch (error) {
             return res.status(422).json({
                 errors: {
