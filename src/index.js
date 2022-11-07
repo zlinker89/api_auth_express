@@ -10,6 +10,7 @@ app.use(cors()); // permite que otras apps accedan a mi API
 // Set database and models
 const db = require('./configuration/db')
 const UserRouter = require('./routes/users');
+const FakerRouter = require('./routes/faker');
 
 (async () => {
     try {
@@ -24,6 +25,9 @@ const UserRouter = require('./routes/users');
 
 // routes
 app.use(UserRouter);
+if (process.env.debug) {
+    app.use(FakerRouter);
+}
 
 // listen
 app.listen(3000, () => {
