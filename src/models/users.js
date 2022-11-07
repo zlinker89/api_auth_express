@@ -26,20 +26,32 @@ const User = db.define('users', {
     { timestamps: true }
 );
 
-User.getPaginated = async function (page, size, filter = null) {
+User.getPaginated = async function (page, size, estados, filter = null) {
     let users = [];
     try {
         if (!filter) {
             users = await User.findAndCountAll({
                 offset: db.literal(page * size),
                 limit: db.literal(size),
-                order: [db.literal('name')]
+                order: [db.literal('name')],
+                where: {
+                    estado: {
+                        [Op.in]: estados
+                    }
+                }
             });
         } else {
             users = await User.findAndCountAll({
                 offset: db.literal(page * size),
                 limit: db.literal(size),
-                where: { name: { [Op.like] : `%${filter.toLowerCase()}%` }  },
+                where: {
+                    name: { [Op.like]: `%${filter.toLowerCase()}%` },
+                    [Op.and]: {
+                        estado: {
+                            [Op.in]: estados
+                        }
+                    }
+                },
                 order: [db.literal('name')]
             });
         }
@@ -55,7 +67,7 @@ User.getPaginated = async function (page, size, filter = null) {
 
 User.searchUser = async function (predicate) {
     try {
-        const user = await User.findOne({ where: predicate})
+        const user = await User.findOne({ where: predicate })
         return user;
     } catch (error) {
         throw new Error(error);
@@ -75,13 +87,15 @@ User.storeUser = async function (user) {
     }
 }
 
-User.updateUser = async function (hashId, user) {
+User.updateUser = async function (predicate, data) {
     // transaction start
     const t = await db.transaction();
     try {
-        const userCreated = await User.create(user, { transaction: t })
+        await User.update(data, {
+            where: predicate
+        }, { transaction: t })
         await t.commit();
-        return userCreated;
+        return await User.searchUser(predicate);
     } catch (error) {
         await t.rollback();
         throw new Error(error);

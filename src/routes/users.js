@@ -8,8 +8,14 @@ router.get('/users', async (req, res) => {
     const size = Number(req.query.size);
     const page = Number(req.query.page);
     const filter = req.query.filter;
+    const estado = req.query.estado;
     try {
-        const data = await User.getPaginated(page, size, filter);
+        const estados = {
+            Todos: ['Activo', 'Inactivo'],
+            Activo: ['Activo'],
+            Inactivo: ['Inactivo']
+        }
+        const data = await User.getPaginated(page, size, estados[estado], filter);
         data.rows = data.rows.map(user => {
             return Object.assign(
                 {},
@@ -77,6 +83,50 @@ router.post('/users',
                 {},
                 ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
                     [key]: user[key]
+                }))
+            );
+            res.status(201).json(userToShow);
+        } catch (error) {
+            return res.status(422).json({
+                errors: {
+                    msg: error.message
+                }
+            })
+        }
+    });
+
+    router.put('/users/:hashId',
+    // name must be an email
+    body('name').isEmail()
+        .withMessage('Debe ingresar un Email valido'),
+    async (req, res) => {
+        // Finds the validation errors in this request and wraps them in 
+        // an object with handy functions
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        // get parameters
+        const { hashId } = req.params;
+        const { name, estado } = req.body;
+        // update user
+        try {
+            // si el usuario existe con ese correo no lo actualizamos
+            const user = await User.searchUser({ name: name });
+            let dataToUpdate = null;
+            if (!user) {
+                dataToUpdate = { name, estado };
+            } else if (user.hashId == hashId) {
+                dataToUpdate = { estado };
+            } else {
+                throw new Error("El email ingresado ya se encuentra asignado.");
+            }
+            const userDB = await User.updateUser({ hashId: hashId }, dataToUpdate);
+            // hidden fields
+            const userToShow = Object.assign(
+                {},
+                ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
+                    [key]: userDB[key]
                 }))
             );
             res.status(201).json(userToShow);

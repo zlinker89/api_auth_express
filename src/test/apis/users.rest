@@ -1,10 +1,10 @@
 // get users paginated
-GET http://localhost:3000/users?size=25&page=0
+GET http://localhost:3000/users?size=25&page=0&estado=Todos
 
 ###
 
 // get users paginated
-GET http://localhost:3000/users?size=25&page=0&filter=frank
+GET http://localhost:3000/users?size=25&page=0&filter=frank&estado=Todos
 
 
 ###
@@ -22,4 +22,15 @@ Content-Type: application/json
 {
     "name": "dayana89@hotmail.com",
     "password": "1234"
+}
+
+###
+
+// get one resource
+PUT http://localhost:3000/users/60c9929a-2204-4cab-b6b5-187f4aa758ac
+Content-Type: application/json
+
+{
+    "name": "Emmalee35@gmail.com",
+    "estado": "Inactivo"
 }
