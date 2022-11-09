@@ -29,32 +29,27 @@ const User = db.define('users', {
 User.getPaginated = async function (page, size, estados, filter = null) {
     let users = [];
     try {
-        if (!filter) {
-            users = await User.findAndCountAll({
-                offset: db.literal(page * size),
-                limit: db.literal(size),
-                order: [db.literal('name')],
-                where: {
+        let where = {
+            estado: {
+                [Op.in]: estados
+            }
+        };
+        if (filter) {
+            where = {
+                name: { [Op.like]: `%${filter.toLowerCase()}%` },
+                [Op.and]: {
                     estado: {
                         [Op.in]: estados
                     }
                 }
-            });
-        } else {
-            users = await User.findAndCountAll({
-                offset: db.literal(page * size),
-                limit: db.literal(size),
-                where: {
-                    name: { [Op.like]: `%${filter.toLowerCase()}%` },
-                    [Op.and]: {
-                        estado: {
-                            [Op.in]: estados
-                        }
-                    }
-                },
-                order: [db.literal('name')]
-            });
+            };
         }
+        users = await User.findAndCountAll({
+            offset: db.literal(page * size),
+            limit: db.literal(size),
+            where: where,
+            order: [db.literal('name')]
+        });
     } catch (error) {
         throw new Error(error);
     }

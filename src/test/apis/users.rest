@@ -1,16 +1,16 @@
 // get users paginated
-GET http://localhost:3000/users?size=25&page=0&estado=Todos
+GET http://localhost:3000/users?size=50&page=0&estado=Todos
 
 ###
 
 // get users paginated
-GET http://localhost:3000/users?size=25&page=0&filter=frank&estado=Todos
+GET http://localhost:3000/users?size=25&page=0&filter=john&estado=Todos
 
 
 ###
 
 // get one resource
-GET http://localhost:3000/users/9bef7fa2-b105-4197-89a8-731dd25878da
+GET http://localhost:3000/users/ac0d8b91-df26-4350-b3a6-7ae076c24d79
 
 
 ###
@@ -20,17 +20,17 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "dayana89@hotmail.com",
+    "name": "john89@hotmail.com",
     "password": "1234"
 }
 
 ###
 
 // get one resource
-PUT http://localhost:3000/users/60c9929a-2204-4cab-b6b5-187f4aa758ac
+PUT http://localhost:3000/users/ac0d8b91-df26-4350-b3a6-7ae076c24d79
 Content-Type: application/json
 
 {
-    "name": "Emmalee35@gmail.com",
+    "name": "john89@hotmail.com",
     "estado": "Inactivo"
 }
