@@ -1,5 +1,5 @@
 
-const User = require('../models/users');
+const User = require('../models/users.model');
 const router = require('express').Router();
 const { faker }= require("@faker-js/faker");
 

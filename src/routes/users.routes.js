@@ -2,7 +2,7 @@ const UserController = require('../controllers/user.controller');
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
-const { make } = require('../helpers/passwordHelper');
+const { make } = require('../helpers/password.helper');
 
 router.get('/users', async (req, res) => {
     const size = Number(req.query.size);
