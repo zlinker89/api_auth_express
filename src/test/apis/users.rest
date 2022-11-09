@@ -20,17 +20,17 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "john89@hotmail.com",
+    "name": "john899@hotmail.com",
     "password": "1234"
 }
 
 ###
 
 // get one resource
-PUT http://localhost:3000/users/ac0d8b91-df26-4350-b3a6-7ae076c24d79
+PUT http://localhost:3000/users/c6e2a9d6-dbf0-4e28-836a-8e17bb5c80f1
 Content-Type: application/json
 
 {
-    "name": "john89@hotmail.com",
-    "estado": "Inactivo"
+    "name": "john899@hotmail.com",
+    "estado": "Eliminado"
 }

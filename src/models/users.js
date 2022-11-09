@@ -53,11 +53,7 @@ User.getPaginated = async function (page, size, estados, filter = null) {
     } catch (error) {
         throw new Error(error);
     }
-    // config pagination
-    const { count, rows } = users;
-    const currentPage = page ? +page : 0;
-    const totalPages = Math.ceil(count / size);
-    return { totalItems: count, rows, totalPages, currentPage };
+    return users;
 }
 
 User.searchUser = async function (predicate) {

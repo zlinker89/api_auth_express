@@ -1,4 +1,4 @@
-const User = require('../models/users');
+const UserService = require('../services/UserService');
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
@@ -15,7 +15,7 @@ router.get('/users', async (req, res) => {
             Activo: ['Activo'],
             Inactivo: ['Inactivo']
         }
-        const data = await User.getPaginated(page, size, estados[estado], filter);
+        const data = await UserService.getPaginated(page, size, estados[estado], filter);
         data.rows = data.rows.map(user => {
             return Object.assign(
                 {},
@@ -36,7 +36,7 @@ router.get('/users', async (req, res) => {
 
 router.get('/users/:hashId', async (req, res) => {
     const { hashId } = req.params;
-    const user = await User.searchUser({ hashId: hashId })
+    const user = await UserService.searchUser({ hashId: hashId })
     if (user === null) {
         res.status(404).json({ error: "Usuario no encontrado" });
     }
@@ -69,11 +69,11 @@ router.post('/users',
         const hashPassword = await make(password);
         try {
             // validate if user exists
-            const userDB = await User.searchUser({ name: name });
+            const userDB = await UserService.searchUser({ name: name });
             if (userDB) {
                 throw new Error("El usuario ya se encuentra registrado")
             }
-            const user = await User.storeUser({
+            const user = await UserService.storeUser({
                 name: name,
                 password: hashPassword,
                 hashId: uuidv4()
@@ -112,7 +112,7 @@ router.post('/users',
         // update user
         try {
             // si el usuario existe con ese correo no lo actualizamos
-            const user = await User.searchUser({ name: name });
+            const user = await UserService.searchUser({ name: name });
             let dataToUpdate = null;
             if (!user) {
                 dataToUpdate = { name, estado };
@@ -121,7 +121,7 @@ router.post('/users',
             } else {
                 throw new Error("El email ingresado ya se encuentra asignado.");
             }
-            const userDB = await User.updateUser({ hashId: hashId }, dataToUpdate);
+            const userDB = await UserService.updateUser({ hashId: hashId }, dataToUpdate);
             // hidden fields
             const userToShow = Object.assign(
                 {},
