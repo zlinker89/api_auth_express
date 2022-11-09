@@ -4,13 +4,13 @@ GET http://localhost:3000/users?size=50&page=0&estado=Todos
 ###
 
 // get users paginated
-GET http://localhost:3000/users?size=25&page=0&filter=john&estado=Todos
+GET http://localhost:3000/users?size=25&page=0&filter=ospi89&estado=Todos
 
 
 ###
 
 // get one resource
-GET http://localhost:3000/users/ac0d8b91-df26-4350-b3a6-7ae076c24d79
+GET http://localhost:3000/users/c8248394-900f-42be-8c27-248a92b53b15
 
 
 ###
@@ -20,17 +20,17 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "john899@hotmail.com",
+    "name": "ospi89@hotmail.com",
     "password": "1234"
 }
 
 ###
 
 // get one resource
-PUT http://localhost:3000/users/c6e2a9d6-dbf0-4e28-836a-8e17bb5c80f1
+PUT http://localhost:3000/users/c8248394-900f-42be-8c27-248a92b53b15
 Content-Type: application/json
 
 {
-    "name": "john899@hotmail.com",
-    "estado": "Eliminado"
+    "name": "ospi89@hotmail.com",
+    "estado": "Activo"
 }

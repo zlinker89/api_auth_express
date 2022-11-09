@@ -86,11 +86,12 @@ User.updateUser = async function (predicate, data) {
             where: predicate
         }, { transaction: t })
         await t.commit();
-        return await User.searchUser(predicate);
+        return true;
     } catch (error) {
         await t.rollback();
         throw new Error(error);
     }
+    return false;
 }
 
 module.exports = User;

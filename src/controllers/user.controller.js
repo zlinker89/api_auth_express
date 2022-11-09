@@ -1,8 +1,8 @@
 const { Op } = require('sequelize');
 const User = require('../models/users');
 
-const UserService = {};
-UserService.getPaginated = async function (page, size, estados, filter = null) {
+const UserController = {};
+UserController.getPaginated = async function (page, size, estados, filter = null) {
     const users = await User.getPaginated(page, size, estados, filter);
     // config pagination
     const { count, rows } = users;
@@ -11,7 +11,7 @@ UserService.getPaginated = async function (page, size, estados, filter = null) {
     return { totalItems: count, rows, totalPages, currentPage };
 }
 
-UserService.searchUser = async function (predicate) {
+UserController.searchUser = async function (predicate) {
     try {
         const user = await User.searchUser(predicate)
         return user;
@@ -20,7 +20,7 @@ UserService.searchUser = async function (predicate) {
     }
 }
 
-UserService.storeUser = async function (user) {
+UserController.storeUser = async function (user) {
     try {
         const userCreated = await User.storeUser(user)
         return userCreated;
@@ -29,7 +29,7 @@ UserService.storeUser = async function (user) {
     }
 }
 
-UserService.updateUser = async function (predicate, data) {
+UserController.updateUser = async function (predicate, data) {
     try {
         return await User.updateUser(predicate, data);
     } catch (error) {
@@ -37,4 +37,4 @@ UserService.updateUser = async function (predicate, data) {
     }
 }
 
-module.exports = UserService;
+module.exports = UserController;

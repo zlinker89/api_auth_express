@@ -1,4 +1,4 @@
-const UserService = require('../services/UserService');
+const UserController = require('../controllers/user.controller');
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
@@ -15,7 +15,7 @@ router.get('/users', async (req, res) => {
             Activo: ['Activo'],
             Inactivo: ['Inactivo']
         }
-        const data = await UserService.getPaginated(page, size, estados[estado], filter);
+        const data = await UserController.getPaginated(page, size, estados[estado], filter);
         data.rows = data.rows.map(user => {
             return Object.assign(
                 {},
@@ -36,9 +36,10 @@ router.get('/users', async (req, res) => {
 
 router.get('/users/:hashId', async (req, res) => {
     const { hashId } = req.params;
-    const user = await UserService.searchUser({ hashId: hashId })
+    const user = await UserController.searchUser({ hashId: hashId })
     if (user === null) {
         res.status(404).json({ error: "Usuario no encontrado" });
+        return;
     }
     // hidden fields
     const userToShow = Object.assign(
@@ -69,11 +70,11 @@ router.post('/users',
         const hashPassword = await make(password);
         try {
             // validate if user exists
-            const userDB = await UserService.searchUser({ name: name });
+            const userDB = await UserController.searchUser({ name: name });
             if (userDB) {
                 throw new Error("El usuario ya se encuentra registrado")
             }
-            const user = await UserService.storeUser({
+            const user = await UserController.storeUser({
                 name: name,
                 password: hashPassword,
                 hashId: uuidv4()
@@ -112,24 +113,23 @@ router.post('/users',
         // update user
         try {
             // si el usuario existe con ese correo no lo actualizamos
-            const user = await UserService.searchUser({ name: name });
+            const user = await UserController.searchUser({ name: name });
+            const userDB = await UserController.searchUser({ hashId: hashId });
+            if (userDB === null) {
+                res.status(404).json({ error: "Usuario no encontrado" });
+                return;
+            }
             let dataToUpdate = null;
             if (!user) {
                 dataToUpdate = { name, estado };
+
             } else if (user.hashId == hashId) {
                 dataToUpdate = { estado };
             } else {
                 throw new Error("El email ingresado ya se encuentra asignado.");
             }
-            const userDB = await UserService.updateUser({ hashId: hashId }, dataToUpdate);
-            // hidden fields
-            const userToShow = Object.assign(
-                {},
-                ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
-                    [key]: userDB[key]
-                }))
-            );
-            res.status(201).json(userToShow);
+            const updated = await UserController.updateUser({ hashId: hashId }, dataToUpdate);
+            res.status(200).json(updated);
         } catch (error) {
             return res.status(422).json({
                 errors: {
