@@ -1,5 +1,4 @@
-const { Op } = require('sequelize');
-const User = require('../models/users.model');
+const { User } = require('../database/models');
 
 const UserController = {};
 UserController.getPaginated = async function (page, size, estados, filter = null) {
