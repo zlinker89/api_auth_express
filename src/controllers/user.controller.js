@@ -1,7 +1,7 @@
 const { User } = require('../database/models');
 const { v4: uuidv4 } = require('uuid');
 const { make } = require('../helpers/password.helper');
-
+const { hide } = require('../helpers/hideFields.helper');
 const UserController = {};
 UserController.getPaginated = async function (page, size, estados, filter = null) {
     const users = await User.getPaginated(page, size, estados, filter);
@@ -36,13 +36,7 @@ UserController.storeUser = async function (name, password) {
             hashId: uuidv4()
         });
         // hidden fields
-        const userToShow = Object.assign(
-            {},
-            ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
-                [key]: user[key]
-            }))
-        );
-        return userToShow;
+        return hide(['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'], user);
     } catch (error) {
         throw new Error(error);
     }
