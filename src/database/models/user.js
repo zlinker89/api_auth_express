@@ -1,5 +1,6 @@
 'use strict';
 const {
+  Op,
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
@@ -64,10 +65,10 @@ module.exports = (sequelize, DataTypes) => {
         };
       }
       users = await User.findAndCountAll({
-        offset: db.literal(page * size),
-        limit: db.literal(size),
+        offset: sequelize.literal(page * size),
+        limit: sequelize.literal(size),
         where: where,
-        order: [db.literal('name')]
+        order: [sequelize.literal('name')]
       });
     } catch (error) {
       throw new Error(error);
@@ -86,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.storeUser = async function (user) {
     // transaction start
-    const t = await db.transaction();
+    const t = await sequelize.transaction();
     try {
       const userCreated = await User.create(user, { transaction: t })
       await t.commit();
@@ -99,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.updateUser = async function (predicate, data) {
     // transaction start
-    const t = await db.transaction();
+    const t = await sequelize.transaction();
     try {
       await User.update(data, {
         where: predicate

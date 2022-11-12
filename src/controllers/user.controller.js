@@ -1,4 +1,6 @@
 const { User } = require('../database/models');
+const { v4: uuidv4 } = require('uuid');
+const { make } = require('../helpers/password.helper');
 
 const UserController = {};
 UserController.getPaginated = async function (page, size, estados, filter = null) {
@@ -19,20 +21,40 @@ UserController.searchUser = async function (predicate) {
     }
 }
 
-UserController.storeUser = async function (user) {
+UserController.storeUser = async function (name, password) {
     try {
-        const userCreated = await User.storeUser(user)
-        return userCreated;
+        // password hash 
+        const passwordHash = await make(password);
+        // validate if user exists
+        const userDB = await User.searchUser({ name: name });
+        if (userDB) {
+            throw new Error("El usuario ya se encuentra registrado")
+        }
+        const user = await User.storeUser({
+            name: name,
+            password: passwordHash,
+            hashId: uuidv4()
+        });
+        // hidden fields
+        const userToShow = Object.assign(
+            {},
+            ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
+                [key]: user[key]
+            }))
+        );
+        return userToShow;
     } catch (error) {
         throw new Error(error);
     }
 }
 
-UserController.updateUser = async function (predicate, data) {
+UserController.updateUser = async function (estado, hashId) {
+    // update user
     try {
-        return await User.updateUser(predicate, data);
+        const dataToUpdate = { estado };
+        return await User.updateUser({ hashId: hashId }, dataToUpdate);
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error)
     }
 }
 

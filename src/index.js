@@ -13,12 +13,14 @@ app.use(cors());
 // Set database and models
 const db = require('./database/models')
 const UserRouter = require('./routes/users.routes');
-const FakerRouter = require('./routes/faker.routes');
+const AuthRouter = require('./routes/auth.routes');
 
 // routes
-app.use(UserRouter);
+app.use('/api/', UserRouter);
+app.use('/api/', AuthRouter);
 if (process.env.debug) {
-    app.use(FakerRouter);
+    const FakerRouter = require('./routes/faker.routes');
+    app.use('/api/', FakerRouter);
 }
 (async () => {
     try {

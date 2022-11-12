@@ -1,1 +1,1 @@
-POST http://localhost:3000/faker/users
+POST http://localhost:3000/api/faker/users

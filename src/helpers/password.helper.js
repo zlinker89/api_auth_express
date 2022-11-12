@@ -8,10 +8,9 @@ async function make(plaintextPassword) {
     }
 }
 
-async function compare(plaintextPassword) {
+async function compare(plaintextPassword, hash) {
     try {
-        const hash = bcrypt.hash(plaintextPassword, 10);
-        return bcyrpt.compare(plaintextPassword, hash);
+        return bcrypt.compare(plaintextPassword, hash);
     } catch (error) {
         throw new Error(error);
     }
