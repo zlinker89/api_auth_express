@@ -5,3 +5,14 @@ Content-Type: application/json
     "name":"ospi89@hotmail.com",
     "password":"1234"
 }
+
+###
+
+GET http://localhost:3000/api/auth/get_user_data
+auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoib3NwaTg5QGhvdG1haWwuY29tIiwiaWQiOjEsImlhdCI6MTY2ODI3NjkwMn0.LqyDhQN04Wt24RnKGBQB_bmdW58QCVhK_pJvPIoXxCY
+
+
+###
+
+GET http://localhost:3000/api/auth/logout
+auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoib3NwaTg5QGhvdG1haWwuY29tIiwiaWQiOjEsImlhdCI6MTY2ODI3NjkwMn0.LqyDhQN04Wt24RnKGBQB_bmdW58QCVhK_pJvPIoXxCY

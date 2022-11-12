@@ -1,6 +1,7 @@
 const UserController = require('../controllers/user.controller');
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
+const { hide } = require('../helpers/hideFields.helper');
 
 const schemaStore = Joi.object({
     name: Joi.string().email({ minDomainSegments: 2 }).required(),
@@ -22,12 +23,7 @@ router.get('/users', async (req, res) => {
         }
         const data = await UserController.getPaginated(page, size, estados[estado], filter);
         data.rows = data.rows.map(user => {
-            return Object.assign(
-                {},
-                ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
-                    [key]: user[key]
-                }))
-            );
+            return hide(['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'], user);
         });
         res.json(data);
     } catch (error) {
@@ -47,12 +43,7 @@ router.get('/users/:hashId', async (req, res) => {
         return;
     }
     // hidden fields
-    const userToShow = Object.assign(
-        {},
-        ...['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'].map(key => ({
-            [key]: user[key]
-        }))
-    );
+    const userToShow = hide(['id', 'hashId', 'name', 'estado', 'createdAt', 'updatedAt'], user);
     res.json(userToShow);
 });
 
@@ -70,9 +61,7 @@ router.post('/users',
             res.status(201).json(user);
         } catch (error) {
             return res.status(422).json({
-                errors: {
-                    msg: error.message
-                }
+                error: error.message
             })
         }
     });

@@ -15,12 +15,35 @@ router.post('/auth/login', async (req, res) => {
         return res.status(200).json(result);
     } catch (error) {
         return res.status(422).json({
-            errors: {
-                msg: error.message
-            }
+            error: error.message
         })
     }
 });
 
+router.get('/auth/get_user_data', async (req, res) => {
+    try {
+        const token = req.header('auth-token')
+        if (!token) throw new Error('Acceso denegado');
+        const result = await AuthController.getUserData(token);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(401).json({
+            error: error.message
+        }) 
+    }
+});
+
+router.get('/auth/logout', async (req, res) => {
+    try {
+        const token = req.header('auth-token')
+        if (!token) throw new Error('Acceso denegado');
+        const result = await AuthController.logout(token);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(401).json({
+            error: error.message
+        }) 
+    }
+});
 
 module.exports = router;

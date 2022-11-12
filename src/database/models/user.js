@@ -76,9 +76,15 @@ module.exports = (sequelize, DataTypes) => {
     return users;
   }
 
-  User.searchUser = async function (predicate) {
+  User.searchUser = async function (predicate, include = null) {
     try {
-      const user = await User.findOne({ where: predicate })
+      let user = null; 
+      if (include) {
+        user = await User.findOne({ where: predicate, include: include })
+      } else {
+        user = await User.findOne({ where: predicate })
+
+      }
       return user;
     } catch (error) {
       throw new Error(error);

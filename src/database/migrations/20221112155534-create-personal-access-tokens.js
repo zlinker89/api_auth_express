@@ -2,25 +2,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('PersonalAccessTokens', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Users",
+          key: "id"
+        }
       },
-      password: {
-        type: Sequelize.STRING
-      },
-      'hashId': {
-        type: Sequelize.STRING()
-      },
-      'estado': {
-        type: Sequelize.ENUM('Activo', 'Inactivo', 'Eliminado'),
-        defaultValue: 'Activo'
+      token: Sequelize.STRING,
+      lastUsed: {
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -33,6 +31,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('PersonalAccessTokens');
   }
 };
